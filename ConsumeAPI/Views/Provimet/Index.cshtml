@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ConsumeAPI.Models.Provimet>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProvimetId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentiId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LendaId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfesoriId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Piket)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nota)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProvimetId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Studenti.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lenda.EmriLendes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Profesori.EmriProfesorit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Piket)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nota)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ProvimetId }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ProvimetId }) |
+                @Html.ActionLink("Delete", "DeleteDetails", new { id=item.ProvimetId })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

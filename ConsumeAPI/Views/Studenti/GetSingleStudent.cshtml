@@ -1,0 +1,73 @@
+﻿@model ConsumeAPI.Models.Studenti
+
+@{
+    ViewData["Title"] = "GetSingleProfesor";
+}
+
+<h1>GetSingleDrejtimi</h1>
+
+<div>
+    <h4>Lendet</h4>
+    <hr />
+    <br />
+    <form method="post">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="id">ID</label>
+                <input class="form-control" name="id" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Get Profesor" class="btn btn-primary" />
+            </div>
+        </div>
+    </form>
+    <br />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StudentId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StudentId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Emri)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Emri)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Mbiemri)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Mbiemri)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DataLindjes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DataLindjes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Indeksi)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Indeksi)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DrejtimiId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Drejtimi.EmriDrejtimit)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StatusiId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Statusi.Statusi)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

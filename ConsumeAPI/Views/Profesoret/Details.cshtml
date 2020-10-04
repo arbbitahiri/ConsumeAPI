@@ -1,0 +1,36 @@
+﻿@model ConsumeAPI.Models.Profesoret
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Profesoret</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ProfesoretId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ProfesoretId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EmriProfesorit)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EmriProfesorit)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LendaId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Lenda.EmriLendes)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ProfesoretId }) |
+    <a asp-action="Index">Back to List</a>
+</div>

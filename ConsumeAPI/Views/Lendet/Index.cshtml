@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ConsumeAPI.Models.Lendet>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LendetId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmriLendes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Semestri)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DrejtimiId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LendetId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmriLendes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semestri)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Drejtimi.EmriDrejtimit)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.LendetId }) |
+                @Html.ActionLink("Details", "Details", new { id=item.LendetId }) |
+                @Html.ActionLink("Delete", "DeleteDetails", new { id=item.LendetId })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

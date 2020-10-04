@@ -1,0 +1,71 @@
+﻿@model IEnumerable<ConsumeAPI.Models.Drejtimet>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DrejtimetId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmriDrejtimit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Koment)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DrejtimetId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmriDrejtimit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Koment)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.DrejtimetId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.DrejtimetId }) |
+                    @Html.ActionLink("Delete", "DeleteDetails", new { id = item.DrejtimetId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <section>
+            <h4>JSON</h4>
+            <hr />
+            <div>
+                <p>
+                    @ViewBag.Json
+                </p>
+            </div>
+        </section>
+        <section>
+            <h4>XML</h4>
+            <hr />
+            <div>
+                <p>
+                    @ViewBag.XML
+                </p>
+            </div>
+        </section>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+﻿@model ConsumeAPI.Models.Provimet
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Provimet</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProvimetId" class="control-label"></label>
+                <input asp-for="ProvimetId" class="form-control" readonly />
+                <span asp-validation-for="ProvimetId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentiId" class="control-label"></label>
+                <select asp-for="StudentiId" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.LendetId, "LendetId", "EmriLendes"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="LendaId" class="control-label"></label>
+                <select asp-for="LendaId" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.StudentiId, "StudentId", "FullName"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProfesoriId" class="control-label"></label>
+                <select asp-for="ProfesoriId" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.ProfesoriId, "ProfesoretId", "EmriProfesorit"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Piket" class="control-label"></label>
+                <input asp-for="Piket" class="form-control" />
+                <span asp-validation-for="Piket" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nota" class="control-label"></label>
+                <input asp-for="Nota" class="form-control" />
+                <span asp-validation-for="Nota" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

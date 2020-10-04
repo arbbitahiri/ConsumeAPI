@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ConsumeAPI.Models.Studenti>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+    <a asp-action="GetSingleStudenti" class="btn btn-primary">Get Single Studenti</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Emri)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mbiemri)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataLindjes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Indeksi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DrejtimiId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StatusiId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Emri)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mbiemri)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataLindjes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Indeksi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Drejtimi.EmriDrejtimit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Statusi.Statusi)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.StudentId }) |
+                @Html.ActionLink("Details", "Details", new { id=item.StudentId }) |
+                @Html.ActionLink("Delete", "DeleteDetails", new { id=item.StudentId })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

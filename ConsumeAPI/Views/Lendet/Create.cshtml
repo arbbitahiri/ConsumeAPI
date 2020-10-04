@@ -1,0 +1,40 @@
+﻿@model ConsumeAPI.Models.Lendet
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Lendet</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EmriLendes" class="control-label"></label>
+                <input asp-for="EmriLendes" class="form-control" />
+                <span asp-validation-for="EmriLendes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Semestri" class="control-label"></label>
+                <input asp-for="Semestri" class="form-control" />
+                <span asp-validation-for="Semestri" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Drejtimi" class="control-label"></label>
+                <select asp-for="DrejtimiId" class="form-control"
+                        asp-items="@(new SelectList(ViewBag.DrejtimiId, "DrejtimetId", "EmriDrejtimit"))"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

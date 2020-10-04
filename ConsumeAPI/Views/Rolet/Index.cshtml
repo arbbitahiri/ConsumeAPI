@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ConsumeAPI.Models.Rolet>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Role</a>
+</p>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RoletId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoletId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoleName)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.RoletId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.RoletId }) |
+                    @Html.ActionLink("Delete", "DeleteDetails", new { id = item.RoletId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
