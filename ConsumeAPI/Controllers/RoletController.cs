@@ -84,7 +84,7 @@ namespace ConsumeAPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> EditForm(int id)
         {
             Rolet rolet = new Rolet();
             using (var httpClient = new HttpClient())

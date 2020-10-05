@@ -127,7 +127,7 @@ namespace ConsumeAPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> EditForm(int id)
         {
             Lendet lendet = new Lendet();
             using (var httpClient = new HttpClient())

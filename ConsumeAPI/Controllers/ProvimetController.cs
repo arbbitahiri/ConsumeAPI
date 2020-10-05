@@ -167,7 +167,7 @@ namespace ConsumeAPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> EditForm(int id)
         {
             Provimet provimi = new Provimet();
             using (var httpClient = new HttpClient())
