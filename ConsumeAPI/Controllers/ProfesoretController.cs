@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using ConsumeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ConsumeAPI.GettingAPI;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ConsumeAPI.Controllers
 {
     public class ProfesoretController : Controller
     {
         private string getApi = "http://localhost:58559/TblProfesorets";
-        private string getLendaApi = "http://localhost:58559/TblLendets";
 
         public async Task<IActionResult> Index()
         {
@@ -21,13 +22,8 @@ namespace ConsumeAPI.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                MyProfesorets = JsonConvert.DeserializeObject<List<Profesoret>>(apiResponse);
-
-                using var responseLenda = await httpClient.GetAsync(getLendaApi);
-                string apiResponseLenda = await responseLenda.Content.ReadAsStringAsync();
-                MyLendets = JsonConvert.DeserializeObject<List<Lendet>>(apiResponseLenda);
+                MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
+                MyLendets = await GetAPI.GetLendetListAsync(httpClient);
             }
 
             foreach (var profesor in MyProfesorets)
@@ -54,13 +50,8 @@ namespace ConsumeAPI.Controllers
             Profesoret profesoret = new Profesoret();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                profesoret = JsonConvert.DeserializeObject<Profesoret>(apiResponse);
-
-                using var responseLenda = await httpClient.GetAsync(getLendaApi + "/" + profesoret.LendaId);
-                string apiResponseLenda = await responseLenda.Content.ReadAsStringAsync();
-                Lendet lendet = JsonConvert.DeserializeObject<Lendet>(apiResponseLenda);
+                profesoret = await GetAPI.GetProfesoretAsync(httpClient, id);
+                Lendet lendet = await GetAPI.GetLendetAsync(httpClient, profesoret.LendaId);
 
                 profesoret.Lenda = lendet;
             }
@@ -76,11 +67,9 @@ namespace ConsumeAPI.Controllers
         public async Task<IActionResult> CreateAsync()
         {
             using var httpClient = new HttpClient();
-            using var responseLenda = await httpClient.GetAsync(getLendaApi);
-            string apiResponseLenda = await responseLenda.Content.ReadAsStringAsync();
-            List<Lendet> MyLendets = JsonConvert.DeserializeObject<List<Lendet>>(apiResponseLenda);
+            List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
 
-            ViewBag.LendetId = MyLendets;
+            ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes");
 
             return View();
         }
@@ -108,6 +97,10 @@ namespace ConsumeAPI.Controllers
                     {
                         ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te profesorit!");
                     }
+
+                    List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
+
+                    ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", profesoret.LendaId);
                 }
                 return View(receivedPofesori);
             }
@@ -123,15 +116,10 @@ namespace ConsumeAPI.Controllers
             Profesoret profesoret = new Profesoret();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                profesoret = JsonConvert.DeserializeObject<Profesoret>(apiResponse);
+                profesoret = await GetAPI.GetProfesoretAsync(httpClient, id);
+                List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
 
-                using var responseLenda = await httpClient.GetAsync(getLendaApi);
-                string apiResponseLenda = await responseLenda.Content.ReadAsStringAsync();
-                List<Lendet> MyLendets = JsonConvert.DeserializeObject<List<Lendet>>(apiResponseLenda);
-
-                ViewBag.LendetId = MyLendets;
+                ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes");
             }
 
             return View(profesoret);
@@ -140,22 +128,22 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Profesoret profesoret)
         {
-            Profesoret receivedPofesori = new Profesoret();
             using (var httpClient = new HttpClient())
             {
-                var content = new MultipartFormDataContent
+                using var response = await httpClient.PutAsJsonAsync<Profesoret>(getApi + "/" + profesoret.ProfesoretId, profesoret);
+                if (response.IsSuccessStatusCode)
                 {
-                    { new StringContent(profesoret.EmriProfesorit), "EmriProfesorit" },
-                    { new StringContent(profesoret.LendaId.ToString()), "LendaId" }
-                };
+                    ViewBag.Result = "Success";
 
-                using var response = await httpClient.PostAsync(getApi, content);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                ViewBag.Result = "Success";
-                receivedPofesori = JsonConvert.DeserializeObject<Profesoret>(apiResponse);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
+
+                ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", profesoret.LendaId);
             }
 
-            return View(receivedPofesori);
+            return View();
         }
 
         public async Task<IActionResult> DeleteDetails(int? id)
@@ -168,13 +156,10 @@ namespace ConsumeAPI.Controllers
             Profesoret profesoret = new Profesoret();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                profesoret = JsonConvert.DeserializeObject<Profesoret>(apiResponse);
+                profesoret = await GetAPI.GetProfesoretAsync(httpClient, id);
+                Lendet lendet = await GetAPI.GetLendetAsync(httpClient, profesoret.LendaId);
 
-                using var responseLenda = await httpClient.GetAsync(getLendaApi + "/" + profesoret.LendaId);
-                string apiResponseLenda = await responseLenda.Content.ReadAsStringAsync();
-                Lendet lendet = JsonConvert.DeserializeObject<Lendet>(apiResponseLenda);
+                profesoret.Lenda = lendet;
 
                 profesoret.Lenda = lendet;
             }

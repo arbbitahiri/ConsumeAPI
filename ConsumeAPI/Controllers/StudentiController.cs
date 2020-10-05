@@ -13,8 +13,6 @@ namespace ConsumeAPI.Controllers
     public class StudentiController : Controller
     {
         private string getApi = "http://localhost:58559/TblStudentis";
-        private string getDrejtimetApi = "http://localhost:58559/TblDrejtimets";
-        private string getStatusiApi = "http://localhost:58559/TblStatusis";
 
         public async Task<IActionResult> Index()
         {
@@ -196,23 +194,15 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Studenti studenti)
         {
-            Studenti receivedStudenti = new Studenti();
             using (var httpClient = new HttpClient())
             {
-                var content = new MultipartFormDataContent
+                using var response = await httpClient.PutAsJsonAsync<Studenti>(getApi + "/" + studenti.StudentId, studenti);
+                if (response.IsSuccessStatusCode)
                 {
-                    { new StringContent(studenti.Emri), "Emri" },
-                    { new StringContent(studenti.Mbiemri), "Mbiemri" },
-                    { new StringContent(studenti.DataLindjes.ToString()), "DataLindjes" },
-                    { new StringContent(studenti.Indeksi), "Indexi" },
-                    { new StringContent(studenti.DrejtimiId.ToString()), "DataLindjes" },
-                    { new StringContent(studenti.StatusiId.ToString()), "DataLindjes" }
-                };
+                    ViewBag.Result = "Success";
 
-                using var response = await httpClient.PostAsync(getApi, content);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                ViewBag.Result = "Success";
-                receivedStudenti = JsonConvert.DeserializeObject<Studenti>(apiResponse);
+                    return RedirectToAction(nameof(Index));
+                }
 
                 List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
                 List<Statuset> MyStatusets = await GetAPI.GetStatusiListAsync(httpClient);
@@ -221,7 +211,7 @@ namespace ConsumeAPI.Controllers
                 ViewData["StatusiId"] = new SelectList(MyStatusets, "StatusiId", "Statusi", studenti.StatusiId);
             }
 
-            return View(receivedStudenti);
+            return View();
         }
 
         public async Task<IActionResult> DeleteDetails(int? id)

@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ConsumeAPI.GettingAPI;
 using ConsumeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace ConsumeAPI.Controllers
@@ -13,7 +15,6 @@ namespace ConsumeAPI.Controllers
     public class UsersController : Controller
     {
         private string getApi = "http://localhost:58559/TblUsers";
-        private string getRoleApi = "http://localhost:58559/TblRolets";
 
         public async Task<IActionResult> IndexAsync()
         {
@@ -22,13 +23,8 @@ namespace ConsumeAPI.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                MyUsers = JsonConvert.DeserializeObject<List<Users>>(apiResponse);
-
-                using var responseRolet = await httpClient.GetAsync(getRoleApi);
-                string apiResponseRolet = await responseRolet.Content.ReadAsStringAsync();
-                MyRolets = JsonConvert.DeserializeObject<List<Rolet>>(apiResponseRolet);
+                MyUsers = await GetAPI.GetUserListAsync(httpClient);
+                MyRolets = await GetAPI.GetRoletListAsync(httpClient);
             }
 
             foreach (var user in MyUsers)
@@ -55,13 +51,8 @@ namespace ConsumeAPI.Controllers
             Users user = new Users();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                user = JsonConvert.DeserializeObject<Users>(apiResponse);
-
-                using var responseRolet = await httpClient.GetAsync(getRoleApi + "/" + user.RoleId);
-                string apiResponseRolet = await responseRolet.Content.ReadAsStringAsync();
-                Rolet rolet = JsonConvert.DeserializeObject<Rolet>(apiResponseRolet);
+                user = await GetAPI.GetUserAsync(httpClient, id);
+                Rolet rolet = await GetAPI.GetRoletAsync(httpClient, id);
 
                 user.Role = rolet;
             }
@@ -77,11 +68,9 @@ namespace ConsumeAPI.Controllers
         public async Task<IActionResult> CreateAsync()
         {
             using var httpClient = new HttpClient();
-            using var responseRolet = await httpClient.GetAsync(getRoleApi);
-            string apiResponseRolet = await responseRolet.Content.ReadAsStringAsync();
-            List<Rolet> MyRolets = JsonConvert.DeserializeObject<List<Rolet>>(apiResponseRolet);
+            List<Rolet> MyRolets = await GetAPI.GetRoletListAsync(httpClient);
 
-            ViewBag.RoletId = MyRolets;
+            ViewData["RoleId"] = new SelectList(MyRolets, "RoletId", "RoleName");
 
             return View();
         }
@@ -109,6 +98,10 @@ namespace ConsumeAPI.Controllers
                     {
                         ModelState.AddModelError(string.Empty, "There was an error while registering role!");
                     }
+
+                    List<Rolet> MyRolets = await GetAPI.GetRoletListAsync(httpClient);
+
+                    ViewData["RoleId"] = new SelectList(MyRolets, "RoletId", "RoleName", user.RoleId);
                 }
                 return View(receivedUser);
             }
@@ -124,9 +117,10 @@ namespace ConsumeAPI.Controllers
             Users user = new Users();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                user = JsonConvert.DeserializeObject<Users>(apiResponse);
+                user = await GetAPI.GetUserAsync(httpClient, id);
+                List<Rolet> MyRolets = await GetAPI.GetRoletListAsync(httpClient);
+
+                ViewData["RoleId"] = new SelectList(MyRolets, "RoletId", "RoleName");
             }
 
             return View(user);
@@ -135,21 +129,22 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Users user)
         {
-            Users receivedUser = new Users();
             using (var httpClient = new HttpClient())
             {
-                var content = new MultipartFormDataContent
+                using var response = await httpClient.PutAsJsonAsync<Users>(getApi + "/" + user.UsersId, user);
+                if (response.IsSuccessStatusCode)
                 {
-                    { new StringContent(user.Username), "Username" }
-                };
+                    ViewBag.Result = "Success";
 
-                using var response = await httpClient.PostAsync(getApi, content);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                ViewBag.Result = "Success";
-                receivedUser = JsonConvert.DeserializeObject<Users>(apiResponse);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                List<Rolet> MyRolets = await GetAPI.GetRoletListAsync(httpClient);
+
+                ViewData["RoleId"] = new SelectList(MyRolets, "RoletId", "RoleName", user.RoleId);
             }
 
-            return View(receivedUser);
+            return View();
         }
 
         public async Task<IActionResult> DeleteDetails(int? id)
@@ -162,13 +157,8 @@ namespace ConsumeAPI.Controllers
             Users user = new Users();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                user = JsonConvert.DeserializeObject<Users>(apiResponse);
-
-                using var responseRolet = await httpClient.GetAsync(getRoleApi + "/" + user.RoleId);
-                string apiResponseRolet = await responseRolet.Content.ReadAsStringAsync();
-                Rolet rolet = JsonConvert.DeserializeObject<Rolet>(apiResponseRolet);
+                user = await GetAPI.GetUserAsync(httpClient, id);
+                Rolet rolet = await GetAPI.GetRoletAsync(httpClient, id);
 
                 user.Role = rolet;
             }

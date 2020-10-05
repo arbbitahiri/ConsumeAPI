@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using ConsumeAPI.GettingAPI;
 using ConsumeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -18,9 +19,7 @@ namespace ConsumeAPI.Controllers
             List<Rolet> MyRolets = new List<Rolet>();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                MyRolets = JsonConvert.DeserializeObject<List<Rolet>>(apiResponse);
+                MyRolets = await GetAPI.GetRoletListAsync(httpClient);
             }
 
             return View(MyRolets);
@@ -36,9 +35,7 @@ namespace ConsumeAPI.Controllers
             Rolet rolet = new Rolet();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                rolet = JsonConvert.DeserializeObject<Rolet>(apiResponse);
+                rolet = await GetAPI.GetRoletAsync(httpClient, id);
             }
 
             if (rolet == null)
@@ -89,9 +86,7 @@ namespace ConsumeAPI.Controllers
             Rolet rolet = new Rolet();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                rolet = JsonConvert.DeserializeObject<Rolet>(apiResponse);
+                rolet = await GetAPI.GetRoletAsync(httpClient, id);
             }
 
             return View(rolet);
@@ -124,9 +119,7 @@ namespace ConsumeAPI.Controllers
             Rolet rolet = new Rolet();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                rolet = JsonConvert.DeserializeObject<Rolet>(apiResponse);
+                rolet = await GetAPI.GetRoletAsync(httpClient, id);
             }
 
             if (rolet == null)

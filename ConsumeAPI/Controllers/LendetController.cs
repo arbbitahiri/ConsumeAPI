@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using ConsumeAPI.GettingAPI;
 using ConsumeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,7 +16,6 @@ namespace ConsumeAPI.Controllers
     public class LendetController : Controller
     {
         private string getApi = "http://localhost:58559/TblLendets";
-        private string getDrejtimetApi = "http://localhost:58559/TblDrejtimets";
 
         public async Task<IActionResult> Index()
         {
@@ -24,19 +24,14 @@ namespace ConsumeAPI.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                MyLendets = JsonConvert.DeserializeObject<List<Lendet>>(apiResponse);
+                MyLendets = await GetAPI.GetLendetListAsync(httpClient);
+                MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
 
-                using var responseDrejtimet = await httpClient.GetAsync(getDrejtimetApi);
-                string apiResponseDrejtimet = await responseDrejtimet.Content.ReadAsStringAsync();
-                MyDrejtimets = JsonConvert.DeserializeObject<List<Drejtimet>>(apiResponseDrejtimet);
+                //string jsonFormatted = JToken.Parse(apiResponse).ToString(Newtonsoft.Json.Formatting.Indented);
+                //XmlDocument xml = JsonConvert.DeserializeXmlNode("{\"Lendet \":" + apiResponse + "}", "Lendet");
 
-                string jsonFormatted = JToken.Parse(apiResponse).ToString(Newtonsoft.Json.Formatting.Indented);
-                XmlDocument xml = JsonConvert.DeserializeXmlNode("{\"Lendet \":" + apiResponse + "}", "Lendet");
-
-                ViewBag.Json = jsonFormatted;
-                ViewBag.XML = xml.OuterXml;
+                //ViewBag.Json = jsonFormatted;
+                //ViewBag.XML = xml.OuterXml;
             }
 
             foreach (var lende in MyLendets)
@@ -63,13 +58,8 @@ namespace ConsumeAPI.Controllers
             Lendet lendet = new Lendet();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                lendet = JsonConvert.DeserializeObject<Lendet>(apiResponse);
-
-                using var responseDrejtimet = await httpClient.GetAsync(getDrejtimetApi + "/" + lendet.DrejtimiId);
-                string apiResponseDrejtimet = await responseDrejtimet.Content.ReadAsStringAsync();
-                Drejtimet drejtimet = JsonConvert.DeserializeObject<Drejtimet>(apiResponseDrejtimet);
+                lendet = await GetAPI.GetLendetAsync(httpClient, id);
+                Drejtimet drejtimet = await GetAPI.GetDrejtimiAsync(httpClient, lendet.DrejtimiId);
 
                 lendet.Drejtimi = drejtimet;
             }
@@ -85,11 +75,9 @@ namespace ConsumeAPI.Controllers
         public async Task<IActionResult> CreateAsync()
         {
             using var httpClient = new HttpClient();
-            using var responseDrejtimet = await httpClient.GetAsync(getDrejtimetApi);
-            string apiResponseDrejtimet = await responseDrejtimet.Content.ReadAsStringAsync();
-            List<Drejtimet> MyDrejtimets = JsonConvert.DeserializeObject<List<Drejtimet>>(apiResponseDrejtimet);
+            List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
 
-            ViewBag.DrejtimiId = MyDrejtimets;
+            ViewData["DrejtimiId"] = new SelectList(MyDrejtimets, "DrejtimetId", "EmriDrejtimit");
 
             return View();
         }
@@ -117,6 +105,10 @@ namespace ConsumeAPI.Controllers
                     {
                         ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te lendes!");
                     }
+
+                    List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
+
+                    ViewData["DrejtimiId"] = new SelectList(MyDrejtimets, "DrejtimetId", "EmriDrejtimit", lendet.DrejtimiId);
                 }
                 return View(receivedLenda);
             }
@@ -132,15 +124,10 @@ namespace ConsumeAPI.Controllers
             Lendet lendet = new Lendet();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                lendet = JsonConvert.DeserializeObject<Lendet>(apiResponse);
+                lendet = await GetAPI.GetLendetAsync(httpClient, id);
+                List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
 
-                using var responseDrejtimet = await httpClient.GetAsync(getDrejtimetApi);
-                string apiResponseDrejtimet = await responseDrejtimet.Content.ReadAsStringAsync();
-                List<Drejtimet> MyDrejtimets = JsonConvert.DeserializeObject<List<Drejtimet>>(apiResponseDrejtimet);
-
-                ViewBag.DrejtimiId = MyDrejtimets;
+                ViewData["DrejtimiId"] = new SelectList(MyDrejtimets, "DrejtimetId", "EmriDrejtimit");
             }
 
             return View(lendet);
@@ -149,23 +136,22 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Lendet lendet)
         {
-            Lendet receivedLenda = new Lendet();
             using (var httpClient = new HttpClient())
             {
-                var content = new MultipartFormDataContent
+                using var response = await httpClient.PutAsJsonAsync<Lendet>(getApi + "/" + lendet.LendetId, lendet);
+                if (response.IsSuccessStatusCode)
                 {
-                    { new StringContent(lendet.EmriLendes), "EmriLendes" },
-                    { new StringContent(lendet.Semestri.ToString()), "Semestri" },
-                    { new StringContent(lendet.DrejtimiId.ToString()), "DrejtimiId" }
-                };
+                    ViewBag.Result = "Success";
 
-                using var response = await httpClient.PostAsync(getApi, content);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                ViewBag.Result = "Success";
-                receivedLenda = JsonConvert.DeserializeObject<Lendet>(apiResponse);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
+
+                ViewData["DrejtimiId"] = new SelectList(MyDrejtimets, "DrejtimetId", "EmriDrejtimit", lendet.DrejtimiId);
             }
 
-            return View(receivedLenda);
+            return View();
         }
 
         public async Task<IActionResult> DeleteDetails(int? id)
@@ -178,13 +164,8 @@ namespace ConsumeAPI.Controllers
             Lendet lendet = new Lendet();
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.GetAsync(getApi + "/" + id);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                lendet = JsonConvert.DeserializeObject<Lendet>(apiResponse);
-
-                using var responseDrejtimet = await httpClient.GetAsync(getDrejtimetApi + "/" + lendet.DrejtimiId);
-                string apiResponseDrejtimet = await responseDrejtimet.Content.ReadAsStringAsync();
-                Drejtimet drejtimet = JsonConvert.DeserializeObject<Drejtimet>(apiResponseDrejtimet);
+                lendet = await GetAPI.GetLendetAsync(httpClient, id);
+                Drejtimet drejtimet = await GetAPI.GetDrejtimiAsync(httpClient, lendet.DrejtimiId);
 
                 lendet.Drejtimi = drejtimet;
             }

@@ -29,8 +29,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="DrejtimiId" class="control-label"></label>
-                <input asp-for="DrejtimiId" class="form-control" />
-                <span asp-validation-for="DrejtimiId" class="text-danger"></span>
+                <select asp-for="DrejtimiId" class="form-control"
+                        asp-items="ViewBag.DrejtimiId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
