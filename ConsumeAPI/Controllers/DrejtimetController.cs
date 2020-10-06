@@ -81,9 +81,9 @@ namespace ConsumeAPI.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Please fill all form!");
+                ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
             }
-            return RedirectToAction(nameof(Index));
+            return View(drejtimet);
         }
 
         public async Task<IActionResult> EditForm(int id)
@@ -100,8 +100,9 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Drejtimet drejtimet)
         {
-            using (var httpClient = new HttpClient())
+            if (ModelState.IsValid)
             {
+                using var httpClient = new HttpClient();
                 using var response = await httpClient.PutAsJsonAsync<Drejtimet>(getApi + "/" + drejtimet.DrejtimetId, drejtimet);
                 if (response.IsSuccessStatusCode)
                 {
@@ -110,8 +111,11 @@ namespace ConsumeAPI.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-
-            return View();
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
+            }
+            return View(drejtimet);
         }
 
         public async Task<IActionResult> DeleteDetails(int? id)

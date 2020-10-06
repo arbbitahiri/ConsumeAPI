@@ -85,38 +85,36 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Lendet lendet)
         {
+            Lendet receivedLenda = new Lendet();
+            using var httpClient = new HttpClient();
             if (ModelState.IsValid)
             {
-                Lendet receivedLenda = new Lendet();
-                using (var httpClient = new HttpClient())
+                StringContent content = new StringContent(JsonConvert.SerializeObject(lendet), Encoding.UTF8, "application/json");
+
+                using var response = await httpClient.PostAsync(getApi, content);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                receivedLenda = JsonConvert.DeserializeObject<Lendet>(apiResponse);
+
+                string success = response.StatusCode.ToString();
+                if (success == "Created")
                 {
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(lendet), Encoding.UTF8, "application/json");
-
-                    using var response = await httpClient.PostAsync(getApi, content);
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    receivedLenda = JsonConvert.DeserializeObject<Lendet>(apiResponse);
-
-                    string success = response.StatusCode.ToString();
-                    if (success == "Created")
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te lendes!");
-                    }
-
-                    List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
-
-                    ViewData["DrejtimiId"] = new SelectList(MyDrejtimets, "DrejtimetId", "EmriDrejtimit", lendet.DrejtimiId);
+                    return RedirectToAction(nameof(Index));
                 }
-                return View(receivedLenda);
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te lendes!");
+                }
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Please fill all form!");
+                ModelState.AddModelError(string.Empty, "Plotesoni te gjitha format!");
             }
-            return RedirectToAction(nameof(Index));
+
+            List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
+
+            ViewData["DrejtimiId"] = new SelectList(MyDrejtimets, "DrejtimetId", "EmriDrejtimit", lendet.DrejtimiId);
+
+            return View(lendet);
         }
 
         public async Task<IActionResult> EditForm(int id)
@@ -138,12 +136,19 @@ namespace ConsumeAPI.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.PutAsJsonAsync<Lendet>(getApi + "/" + lendet.LendetId, lendet);
-                if (response.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    ViewBag.Result = "Success";
+                    using var response = await httpClient.PutAsJsonAsync<Lendet>(getApi + "/" + lendet.LendetId, lendet);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ViewBag.Result = "Success";
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha format!");
                 }
 
                 List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);

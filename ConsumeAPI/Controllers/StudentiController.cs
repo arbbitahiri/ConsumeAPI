@@ -7,6 +7,8 @@ using ConsumeAPI.GettingAPI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Linq;
+using System;
 
 namespace ConsumeAPI.Controllers
 {
@@ -148,22 +150,32 @@ namespace ConsumeAPI.Controllers
             using var httpClient = new HttpClient();
             if (ModelState.IsValid)
             {
-                StringContent content = new StringContent(JsonConvert.SerializeObject(studenti), Encoding.UTF8, "application/json");
+                List<Studenti> MyStudentis = await GetAPI.GetStudentiListAsync(httpClient);
 
-                using var response = await httpClient.PostAsync(getApi, content);
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                receivedStudenti = JsonConvert.DeserializeObject<Studenti>(apiResponse);
+                var checkStudentIndex = MyStudentis.Where(f => f.Indeksi == studenti.Indeksi).ToList();
 
-                string success = response.StatusCode.ToString();
-                if (success == "Created")
+                if (checkStudentIndex.Count > 0)
                 {
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError(string.Empty, "Ekziston student me Indeks te tille!");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "There was an error while registering role!");
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(studenti), Encoding.UTF8, "application/json");
+
+                    using var response = await httpClient.PostAsync(getApi, content);
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    receivedStudenti = JsonConvert.DeserializeObject<Studenti>(apiResponse);
+
+                    string success = response.StatusCode.ToString();
+                    if (success == "Created")
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
-                return View(receivedStudenti);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
             }
 
             List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
@@ -196,12 +208,19 @@ namespace ConsumeAPI.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.PutAsJsonAsync<Studenti>(getApi + "/" + studenti.StudentId, studenti);
-                if (response.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    ViewBag.Result = "Success";
+                    using var response = await httpClient.PutAsJsonAsync<Studenti>(getApi + "/" + studenti.StudentId, studenti);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ViewBag.Result = "Success";
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
                 }
 
                 List<Drejtimet> MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
@@ -259,13 +278,12 @@ namespace ConsumeAPI.Controllers
                     {
                         return RedirectToAction(nameof(Index));
                     }
-                    string apiResponse = await response.Content.ReadAsStringAsync();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                return View(e.Message);
             }
         }
     }

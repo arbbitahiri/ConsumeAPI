@@ -78,10 +78,10 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Users user)
         {
-            if (ModelState.IsValid)
+            Users receivedUser = new Users();
+            using (var httpClient = new HttpClient())
             {
-                Users receivedUser = new Users();
-                using (var httpClient = new HttpClient())
+                if (ModelState.IsValid)
                 {
                     StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
 
@@ -96,20 +96,20 @@ namespace ConsumeAPI.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "There was an error while registering role!");
+                        ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim!");
                     }
 
                     List<Rolet> MyRolets = await GetAPI.GetRoletListAsync(httpClient);
 
                     ViewData["RoleId"] = new SelectList(MyRolets, "RoletId", "RoleName", user.RoleId);
                 }
-                return View(receivedUser);
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
+                }
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Please fill all form!");
-            }
-            return RedirectToAction(nameof(Index));
+
+            return View(user);
         }
 
         public async Task<IActionResult> EditForm(int id)
@@ -131,12 +131,19 @@ namespace ConsumeAPI.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.PutAsJsonAsync<Users>(getApi + "/" + user.UsersId, user);
-                if (response.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    ViewBag.Result = "Success";
+                    using var response = await httpClient.PutAsJsonAsync<Users>(getApi + "/" + user.UsersId, user);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ViewBag.Result = "Success";
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
                 }
 
                 List<Rolet> MyRolets = await GetAPI.GetRoletListAsync(httpClient);

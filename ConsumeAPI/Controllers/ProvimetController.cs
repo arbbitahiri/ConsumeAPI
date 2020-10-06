@@ -106,16 +106,16 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Provimet provimet)
         {
-            if (ModelState.IsValid)
+            Provimet receivedProvimi = new Provimet();
+            using (var httpClient = new HttpClient())
             {
-                Provimet receivedStudenti = new Provimet();
-                using (var httpClient = new HttpClient())
+                if (ModelState.IsValid)
                 {
                     StringContent content = new StringContent(JsonConvert.SerializeObject(provimet), Encoding.UTF8, "application/json");
 
                     using var response = await httpClient.PostAsync(getApi, content);
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    receivedStudenti = JsonConvert.DeserializeObject<Provimet>(apiResponse);
+                    receivedProvimi = JsonConvert.DeserializeObject<Provimet>(apiResponse);
 
                     string success = response.StatusCode.ToString();
                     if (success == "Created")
@@ -124,23 +124,23 @@ namespace ConsumeAPI.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "There was an error while registering role!");
+                        ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te provimit!");
                     }
-
-                    List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
-                    List<Studenti> MyStudentis = await GetAPI.GetStudentiListAsync(httpClient);
-                    List<Profesoret> MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
-
-                    ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", provimet.LendaId);
-                    ViewData["StudentiId"] = new SelectList(MyStudentis, "StudentId", "FullName", provimet.StudentiId);
-                    ViewData["ProfesoriId"] = new SelectList(MyProfesorets, "ProfesoretId", "EmriProfesorit", provimet.ProfesoriId);
                 }
-                return View(receivedStudenti);
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
+                }
+
+                List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
+                List<Studenti> MyStudentis = await GetAPI.GetStudentiListAsync(httpClient);
+                List<Profesoret> MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
+
+                ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", provimet.LendaId);
+                ViewData["StudentiId"] = new SelectList(MyStudentis, "StudentId", "FullName", provimet.StudentiId);
+                ViewData["ProfesoriId"] = new SelectList(MyProfesorets, "ProfesoretId", "EmriProfesorit", provimet.ProfesoriId);
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Please fill all form!");
-            }
+
             return View(provimet);
         }
 
@@ -167,12 +167,19 @@ namespace ConsumeAPI.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.PutAsJsonAsync<Provimet>(getApi + "/" + provimet.ProvimetId, provimet);
-                if (response.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    ViewBag.Result = "Success";
+                    using var response = await httpClient.PutAsJsonAsync<Provimet>(getApi + "/" + provimet.ProvimetId, provimet);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ViewBag.Result = "Success";
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
                 }
 
                 List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);

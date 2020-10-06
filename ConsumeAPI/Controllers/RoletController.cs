@@ -29,7 +29,7 @@ namespace ConsumeAPI.Controllers
         {
             if (id == null)
             {
-                ModelState.AddModelError(string.Empty, "There was an error while getting role!");
+                ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate marrjes te rolit!");
             }
 
             Rolet rolet = new Rolet();
@@ -40,7 +40,7 @@ namespace ConsumeAPI.Controllers
 
             if (rolet == null)
             {
-                ModelState.AddModelError(string.Empty, "There was an error while getting role!");
+                ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate marrjes te rolit!");
             }
 
             return View(rolet);
@@ -69,14 +69,14 @@ namespace ConsumeAPI.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "There was an error while registering role!");
+                        ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te rolit!");
                     }
                 }
                 return View(receivedRolet);
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Please fill all form!");
+                ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -95,15 +95,22 @@ namespace ConsumeAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> Edit(Rolet rolet)
         {
-            using (var httpClient = new HttpClient())
+            if (ModelState.IsValid)
             {
-                using var response = await httpClient.PutAsJsonAsync<Rolet>(getApi + "/" + rolet.RoletId, rolet);
-                if (response.IsSuccessStatusCode)
+                using (var httpClient = new HttpClient())
                 {
-                    ViewBag.Result = "Success";
+                    using var response = await httpClient.PutAsJsonAsync<Rolet>(getApi + "/" + rolet.RoletId, rolet);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ViewBag.Result = "Success";
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
             }
 
             return NotFound();
@@ -113,7 +120,7 @@ namespace ConsumeAPI.Controllers
         {
             if (id == null)
             {
-                ModelState.AddModelError(string.Empty, "There was an error while getting role!");
+                ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate marrjes te rolit!");
             }
 
             Rolet rolet = new Rolet();
@@ -124,7 +131,7 @@ namespace ConsumeAPI.Controllers
 
             if (rolet == null)
             {
-                ModelState.AddModelError(string.Empty, "There was an error while getting role!");
+                ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate marrjes te rolit!");
             }
 
             return View(rolet);

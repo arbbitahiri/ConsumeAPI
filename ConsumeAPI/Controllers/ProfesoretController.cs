@@ -30,7 +30,7 @@ namespace ConsumeAPI.Controllers
             {
                 foreach (var lende in MyLendets)
                 {
-                    if (profesor.LendaId == profesor.LendaId)
+                    if (profesor.LendaId == lende.LendetId)
                     {
                         profesor.Lenda = lende;
                     }
@@ -77,38 +77,36 @@ namespace ConsumeAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Profesoret profesoret)
         {
+            Profesoret receivedPofesori = new Profesoret();
+            using var httpClient = new HttpClient();
             if (ModelState.IsValid)
             {
-                Profesoret receivedPofesori = new Profesoret();
-                using (var httpClient = new HttpClient())
+                StringContent content = new StringContent(JsonConvert.SerializeObject(profesoret), Encoding.UTF8, "application/json");
+
+                using var response = await httpClient.PostAsync(getApi, content);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                receivedPofesori = JsonConvert.DeserializeObject<Profesoret>(apiResponse);
+
+                string success = response.StatusCode.ToString();
+                if (success == "Created")
                 {
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(profesoret), Encoding.UTF8, "application/json");
-
-                    using var response = await httpClient.PostAsync(getApi, content);
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    receivedPofesori = JsonConvert.DeserializeObject<Profesoret>(apiResponse);
-
-                    string success = response.StatusCode.ToString();
-                    if (success == "Created")
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te profesorit!");
-                    }
-
-                    List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
-
-                    ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", profesoret.LendaId);
+                    return RedirectToAction(nameof(Index));
                 }
-                return View(receivedPofesori);
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te profesorit!");
+                }
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Please fill all form!");
+                ModelState.AddModelError(string.Empty, "Plotesoni te gjitha format!");
             }
-            return RedirectToAction(nameof(Index));
+
+            List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
+
+            ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", profesoret.LendaId);
+
+            return View(profesoret);
         }
 
         public async Task<IActionResult> EditForm(int id)
@@ -130,12 +128,19 @@ namespace ConsumeAPI.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using var response = await httpClient.PutAsJsonAsync<Profesoret>(getApi + "/" + profesoret.ProfesoretId, profesoret);
-                if (response.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    ViewBag.Result = "Success";
+                    using var response = await httpClient.PutAsJsonAsync<Profesoret>(getApi + "/" + profesoret.ProfesoretId, profesoret);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ViewBag.Result = "Success";
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha format!");
                 }
 
                 List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
@@ -143,7 +148,7 @@ namespace ConsumeAPI.Controllers
                 ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", profesoret.LendaId);
             }
 
-            return View();
+            return View(profesoret);
         }
 
         public async Task<IActionResult> DeleteDetails(int? id)
