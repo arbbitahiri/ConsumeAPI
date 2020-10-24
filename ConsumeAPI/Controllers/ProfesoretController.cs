@@ -24,6 +24,12 @@ namespace ConsumeAPI.Controllers
             {
                 MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
                 MyLendets = await GetAPI.GetLendetListAsync(httpClient);
+
+                ViewBag.JsonProfesoret = await GetJsonXml.GetJsonProfesoret(httpClient);
+                ViewBag.XmlProfesoret = await GetJsonXml.GetXmlProfesoret(httpClient);
+
+                ViewBag.JsonLendet = await GetJsonXml.GetJsonLendet(httpClient);
+                ViewBag.XmlLendet = await GetJsonXml.GetXmlLendet(httpClient);
             }
 
             foreach (var profesor in MyProfesorets)

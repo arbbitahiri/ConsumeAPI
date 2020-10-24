@@ -20,6 +20,9 @@ namespace ConsumeAPI.Controllers
             using (var httpClient = new HttpClient())
             {
                 MyRolets = await GetAPI.GetRoletListAsync(httpClient);
+
+                ViewBag.JsonRolet = await GetJsonXml.GetJsonRolet(httpClient);
+                ViewBag.XmlRolet = await GetJsonXml.GetXmlRolet(httpClient);
             }
 
             return View(MyRolets);

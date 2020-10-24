@@ -34,32 +34,111 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProvimetId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Studenti.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lenda.EmriLendes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Profesori.EmriProfesorit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Piket)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nota)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "EditForm", new { id=item.ProvimetId }) |
-                @Html.ActionLink("Details", "Details", new { id=item.ProvimetId }) |
-                @Html.ActionLink("Delete", "DeleteDetails", new { id=item.ProvimetId })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProvimetId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Studenti.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lenda.EmriLendes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Profesori.EmriProfesorit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Piket)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nota)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditForm", new { id = item.ProvimetId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ProvimetId }) |
+                    @Html.ActionLink("Delete", "DeleteDetails", new { id = item.ProvimetId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <h2>Eksopozimi</h2>
+        <hr />
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Profesoret</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonProfesoret
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlProfesoret
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Lendet</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonLendet
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlLendet
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

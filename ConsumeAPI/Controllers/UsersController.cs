@@ -25,6 +25,12 @@ namespace ConsumeAPI.Controllers
             {
                 MyUsers = await GetAPI.GetUserListAsync(httpClient);
                 MyRolets = await GetAPI.GetRoletListAsync(httpClient);
+
+                ViewBag.JsonUser = await GetJsonXml.GetJsonUser(httpClient);
+                ViewBag.XmlUser = await GetJsonXml.GetXmlUser(httpClient);
+
+                ViewBag.JsonRolet = await GetJsonXml.GetJsonRolet(httpClient);
+                ViewBag.XmlRolet = await GetJsonXml.GetXmlRolet(httpClient);
             }
 
             foreach (var user in MyUsers)

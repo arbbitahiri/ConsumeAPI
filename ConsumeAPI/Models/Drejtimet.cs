@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace ConsumeAPI.Models
@@ -13,5 +14,8 @@ namespace ConsumeAPI.Models
 
         [Required]
         public string Koment { get; set; }
+
+        public virtual List<Lendet> Lendets { get; set; }
+        public virtual List<Studenti> Studentis { get; set; }
     }
 }

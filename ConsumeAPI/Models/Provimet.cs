@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ConsumeAPI.DataValidation;
+using System.ComponentModel.DataAnnotations;
 
 namespace ConsumeAPI.Models
 {
@@ -18,9 +19,11 @@ namespace ConsumeAPI.Models
         [Display(Name = "Profesori")]
         public int ProfesoriId { get; set; }
 
+        [PiketProvimit]
         [Required(ErrorMessage = "Shkruani piket!")]
         public int Piket { get; set; }
 
+        [NotaStudentit]
         [Required(ErrorMessage = "Shkruani noten!")]
         public int Nota { get; set; }
 

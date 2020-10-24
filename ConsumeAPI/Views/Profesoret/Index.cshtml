@@ -25,23 +25,180 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProfesoretId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmriProfesorit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lenda.EmriLendes)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "EditForm", new { id=item.ProfesoretId }) |
-                @Html.ActionLink("Details", "Details", new { id=item.ProfesoretId }) |
-                @Html.ActionLink("Delete", "DeleteDetails", new { id=item.ProfesoretId })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProfesoretId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmriProfesorit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lenda.EmriLendes)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditForm", new { id = item.ProfesoretId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ProfesoretId }) |
+                    @Html.ActionLink("Delete", "DeleteDetails", new { id = item.ProfesoretId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <h2>Eksopozimi</h2>
+        <hr />
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Provimet</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonProvimet
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlProvimet
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Lendet</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonLendet
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlLendet
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <h2>Eksopozimi</h2>
+        <hr />
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Profesoret</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonProfesoret
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlProfesoret
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Studentet</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonStudenti
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlStudenti
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -31,29 +31,108 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsersId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fjalekalimi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role.RoleName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastLoginDate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "EditForm", new { id=item.UsersId }) |
-                @Html.ActionLink("Details", "Details", new { id=item.UsersId }) |
-                @Html.ActionLink("Delete", "DeleteDetails", new { id=item.UsersId })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UsersId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fjalekalimi)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role.RoleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastLoginDate)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditForm", new { id = item.UsersId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.UsersId }) |
+                    @Html.ActionLink("Delete", "DeleteDetails", new { id = item.UsersId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <h2>Eksopozimi</h2>
+        <hr />
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Useret</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonUser
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlUser
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Rolet</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonRolet
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlRolet
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

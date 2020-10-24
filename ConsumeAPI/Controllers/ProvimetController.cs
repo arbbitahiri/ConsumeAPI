@@ -29,6 +29,18 @@ namespace ConsumeAPI.Controllers
                 MyLendets = await GetAPI.GetLendetListAsync(httpClient);
                 MyStudentis = await GetAPI.GetStudentiListAsync(httpClient);
                 MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
+
+                ViewBag.JsonProvimet = await GetJsonXml.GetJsonProvimet(httpClient);
+                ViewBag.XmlProvimet = await GetJsonXml.GetXmlProvimet(httpClient);
+
+                ViewBag.JsonLendet = await GetJsonXml.GetJsonLendet(httpClient);
+                ViewBag.XmlLendet = await GetJsonXml.GetXmlLendet(httpClient);
+
+                ViewBag.JsonProfesoret = await GetJsonXml.GetJsonProfesoret(httpClient);
+                ViewBag.XmlProfesoret = await GetJsonXml.GetXmlProfesoret(httpClient);
+
+                ViewBag.JsonStudenti = await GetJsonXml.GetJsonStudenti(httpClient);
+                ViewBag.XmlStudenti = await GetJsonXml.GetXmlStudenti(httpClient);
             }
 
             foreach (var provim in MyProvimets)
@@ -109,36 +121,52 @@ namespace ConsumeAPI.Controllers
             Provimet receivedProvimi = new Provimet();
             using (var httpClient = new HttpClient())
             {
-                if (ModelState.IsValid)
-                {
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(provimet), Encoding.UTF8, "application/json");
-
-                    using var response = await httpClient.PostAsync(getApi, content);
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    receivedProvimi = JsonConvert.DeserializeObject<Provimet>(apiResponse);
-
-                    string success = response.StatusCode.ToString();
-                    if (success == "Created")
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te provimit!");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
-                }
-
+                List<Provimet> MyProvimets = await GetAPI.GetProvimetListAsync(httpClient);
                 List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
                 List<Studenti> MyStudentis = await GetAPI.GetStudentiListAsync(httpClient);
                 List<Profesoret> MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
 
+                var checkProvimet = MyProvimets.Any(f => f.LendaId == provimet.LendaId && f.StudentiId == provimet.StudentiId);
+                if (checkProvimet != true)
+                {
+                    foreach (var profesor in MyProfesorets)
+                    {
+                        if (profesor.LendaId == provimet.LendaId)
+                        {
+                            provimet.ProfesoriId = profesor.ProfesoretId;
+                        }
+                    }
+
+                    if (ModelState.IsValid)
+                    {
+                        StringContent content = new StringContent(JsonConvert.SerializeObject(provimet), Encoding.UTF8, "application/json");
+
+                        using var response = await httpClient.PostAsync(getApi, content);
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        receivedProvimi = JsonConvert.DeserializeObject<Provimet>(apiResponse);
+
+                        string success = response.StatusCode.ToString();
+                        if (success == "Created")
+                        {
+                            return RedirectToAction(nameof(Index));
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "Ka ndodhur nje gabim gjate regjistrimit te provimit!");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Provimi ekziston!");
+                }
+
                 ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", provimet.LendaId);
                 ViewData["StudentiId"] = new SelectList(MyStudentis, "StudentId", "FullName", provimet.StudentiId);
-                ViewData["ProfesoriId"] = new SelectList(MyProfesorets, "ProfesoretId", "EmriProfesorit", provimet.ProfesoriId);
             }
 
             return View(provimet);
@@ -167,6 +195,18 @@ namespace ConsumeAPI.Controllers
         {
             using (var httpClient = new HttpClient())
             {
+                List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
+                List<Studenti> MyStudentis = await GetAPI.GetStudentiListAsync(httpClient);
+                List<Profesoret> MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
+
+                foreach (var profesor in MyProfesorets)
+                {
+                    if (profesor.LendaId == provimet.LendaId)
+                    {
+                        provimet.ProfesoriId = profesor.ProfesoretId;
+                    }
+                }
+
                 if (ModelState.IsValid)
                 {
                     using var response = await httpClient.PutAsJsonAsync<Provimet>(getApi + "/" + provimet.ProvimetId, provimet);
@@ -182,13 +222,8 @@ namespace ConsumeAPI.Controllers
                     ModelState.AddModelError(string.Empty, "Plotesoni te gjitha fushat!");
                 }
 
-                List<Lendet> MyLendets = await GetAPI.GetLendetListAsync(httpClient);
-                List<Studenti> MyStudentis = await GetAPI.GetStudentiListAsync(httpClient);
-                List<Profesoret> MyProfesorets = await GetAPI.GetProfesoretListAsync(httpClient);
-
                 ViewData["LendaId"] = new SelectList(MyLendets, "LendetId", "EmriLendes", provimet.LendaId);
                 ViewData["StudentiId"] = new SelectList(MyStudentis, "StudentId", "FullName", provimet.StudentiId);
-                ViewData["ProfesoriId"] = new SelectList(MyProfesorets, "ProfesoretId", "EmriProfesorit", provimet.ProfesoriId);
             }
 
             return View();

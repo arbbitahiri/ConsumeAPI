@@ -16,6 +16,7 @@ namespace ConsumeAPI.Models
         [Required(ErrorMessage = "Zgjedheni rolin!")]
         [Display(Name = "Roli")]
         public int RoleId { get; set; }
+
         public DateTime LastLoginDate { get; set; }
 
         public virtual Rolet Role { get; set; }

@@ -5,11 +5,11 @@ namespace ConsumeAPI.DataValidation
 {
     public class StudentIndex : ValidationAttribute
     {
-        public int MaxValue { get; set; }
+        public int MaxLength { get; set; }
 
         public StudentIndex() : base("{0} eshte gabim. Shkruani ne formen 123456 dhe nje shkronje ne fund.")
         {
-            MaxValue = 7;
+            MaxLength = 7;
         }
 
         public override bool IsValid(object value)
@@ -19,7 +19,7 @@ namespace ConsumeAPI.DataValidation
             if (!string.IsNullOrEmpty(stringValue))
             {
                 int stringLength = stringValue.Length;
-                if (stringLength == MaxValue)
+                if (stringLength == MaxLength)
                 {
                     bool strHasInt = stringValue.All(char.IsLetterOrDigit);
                     if (strHasInt)

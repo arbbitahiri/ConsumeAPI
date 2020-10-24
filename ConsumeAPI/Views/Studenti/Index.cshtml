@@ -38,35 +38,152 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StudentId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Emri)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Mbiemri)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataLindjes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Indeksi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Drejtimi.EmriDrejtimit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Statusi.Statusi)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "EditForm", new { id=item.StudentId }) |
-                @Html.ActionLink("Details", "Details", new { id=item.StudentId }) |
-                @Html.ActionLink("Delete", "DeleteDetails", new { id=item.StudentId })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StudentId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Emri)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mbiemri)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataLindjes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Indeksi)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Drejtimi.EmriDrejtimit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Statusi.Statusi)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditForm", new { id = item.StudentId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.StudentId }) |
+                    @Html.ActionLink("Delete", "DeleteDetails", new { id = item.StudentId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <h2>Eksopozimi</h2>
+        <hr />
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Studentet</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonStudenti
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlStudenti
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Drejtimet</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonDrejtimet
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlDrejtimet
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-2">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml per Statuset</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.JsonStatusi
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.XmlStatusi
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

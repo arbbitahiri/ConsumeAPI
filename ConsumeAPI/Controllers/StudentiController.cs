@@ -27,6 +27,15 @@ namespace ConsumeAPI.Controllers
                 MyStudents = await GetAPI.GetStudentiListAsync(httpClient);
                 MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
                 MyStatusets = await GetAPI.GetStatusiListAsync(httpClient);
+
+                ViewBag.JsonStudenti = await GetJsonXml.GetJsonStudenti(httpClient);
+                ViewBag.XmlStudenti = await GetJsonXml.GetXmlStudenti(httpClient);
+
+                ViewBag.JsonDrejtimet = await GetJsonXml.GetJsonDrejtimet(httpClient);
+                ViewBag.XmlDrejtimet = await GetJsonXml.GetXmlDrejtimet(httpClient);
+
+                ViewBag.JsonStatusi = await GetJsonXml.GetJsonStatusi(httpClient);
+                ViewBag.XmlStatusi = await GetJsonXml.GetXmlStatusi(httpClient);
             }
 
             foreach (var student in MyStudents)

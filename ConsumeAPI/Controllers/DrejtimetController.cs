@@ -2,10 +2,12 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using ConsumeAPI.GettingAPI;
 using ConsumeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ConsumeAPI.Controllers
 {
@@ -20,11 +22,8 @@ namespace ConsumeAPI.Controllers
             {
                 MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
 
-                //string jsonFormatted = JToken.Parse(apiResponse).ToString(Newtonsoft.Json.Formatting.Indented);
-                //XmlDocument xml = JsonConvert.DeserializeXmlNode("{\"Drejtimet \":" + apiResponse + "}", "Drejtimet");
-
-                //ViewBag.Json = jsonFormatted;
-                //ViewBag.XML = xml.OuterXml;
+                ViewBag.Json = await GetJsonXml.GetJsonDrejtimet(httpClient);
+                ViewBag.Xml = await GetJsonXml.GetXmlDrejtimet(httpClient);
             }
 
             return View(MyDrejtimets);

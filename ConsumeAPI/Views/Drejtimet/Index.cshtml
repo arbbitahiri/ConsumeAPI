@@ -47,25 +47,40 @@
     </tbody>
 </table>
 
-@*<div class="col-md-6 col-md-offset-2">
+<div class="col-md-6 col-md-offset-2">
     <div>
-        <section>
-            <h4>JSON</h4>
-            <hr />
-            <div>
-                <p>
-                    @ViewBag.Json
-                </p>
-            </div>
-        </section>
-        <section>
-            <h4>XML</h4>
-            <hr />
-            <div>
-                <p>
-                    @ViewBag.XML
-                </p>
-            </div>
-        </section>
+        <table>
+            <tr>
+                <td>
+                    <h4>Eksopzimi i Json/Xml</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Json:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                            @ViewBag.Json
+                        </pre>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="sample-content">
+                        <span>
+                            <b>Xml:</b>
+                        </span>
+                        <hr />
+                        <pre class="wrapped">
+                             @ViewBag.Xml
+                         </pre>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
-</div>*@
+</div>

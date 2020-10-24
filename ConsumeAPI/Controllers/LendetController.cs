@@ -27,11 +27,11 @@ namespace ConsumeAPI.Controllers
                 MyLendets = await GetAPI.GetLendetListAsync(httpClient);
                 MyDrejtimets = await GetAPI.GetDrejtimiListAsync(httpClient);
 
-                //string jsonFormatted = JToken.Parse(apiResponse).ToString(Newtonsoft.Json.Formatting.Indented);
-                //XmlDocument xml = JsonConvert.DeserializeXmlNode("{\"Lendet \":" + apiResponse + "}", "Lendet");
+                ViewBag.JsonDrejtimet = await GetJsonXml.GetJsonDrejtimet(httpClient);
+                ViewBag.XmlDrejtimet = await GetJsonXml.GetXmlDrejtimet(httpClient);
 
-                //ViewBag.Json = jsonFormatted;
-                //ViewBag.XML = xml.OuterXml;
+                ViewBag.JsonLendet = await GetJsonXml.GetJsonLendet(httpClient);
+                ViewBag.XmlLendet = await GetJsonXml.GetXmlLendet(httpClient);
             }
 
             foreach (var lende in MyLendets)
